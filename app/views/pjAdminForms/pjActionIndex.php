@@ -46,6 +46,11 @@ if (isset($tpl['status']))
 
 	<div id="grid"></div>
 	<div id="dialogView" style="display: none" title=""></div>
+	<style type="text/css">
+	/* Keep the row action icons (edit / view / clone / delete) on a single line */
+	#grid .pj-table td:last-child { white-space: nowrap; min-width: 128px; }
+	#grid .pj-table td:last-child a { float: none; }
+	</style>
 	<script type="text/javascript">
 	var pjGrid = pjGrid || {};
 	pjGrid.roleId = <?php echo (int) $_SESSION[$controller->defaultUser]['role_id']; ?>;

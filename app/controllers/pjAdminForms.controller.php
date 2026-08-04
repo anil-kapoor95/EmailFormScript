@@ -112,6 +112,63 @@ class pjAdminForms extends pjAdmin
 		}
 	}
 	
+	public function pjActionClone()
+	{
+		$this->checkLogin();
+
+		if ($this->isAdmin())
+		{
+			$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+			$arr = pjFormModel::factory()->find($id)->getData();
+			if (count($arr) === 0)
+			{
+				pjUtil::redirect(PJ_INSTALL_URL . "index.php?controller=pjAdminForms&action=pjActionIndex&err=AF08");
+				return;
+			}
+
+			// 1) Duplicate the form record (fresh id / created date, appended title)
+			$data = $arr;
+			unset($data['id'], $data['created'], $data['modified']);
+			$data['form_title'] = $arr['form_title'] . ' (copy)';
+
+			$new_id = pjFormModel::factory()->setAttributes($data)->insert()->getInsertId();
+
+			if ($new_id !== false && (int) $new_id > 0)
+			{
+				// 2) Duplicate the form fields
+				$pjFormFieldModel = pjFormFieldModel::factory();
+				$field_arr = $pjFormFieldModel->where('form_id', $id)->orderBy("order_id ASC")->findAll()->getData();
+				foreach ($field_arr as $field)
+				{
+					unset($field['id']);
+					$field['form_id'] = $new_id;
+					$pjFormFieldModel->reset()->setAttributes($field)->insert();
+				}
+
+				// 3) Duplicate the recipient (user) assignments
+				$user_form_arr = pjUserFormModel::factory()->where('form_id', $id)->findAll()->getData();
+				if (!empty($user_form_arr))
+				{
+					foreach ($user_form_arr as $uf)
+					{
+						pjUserFormModel::factory()->reset()->setAttributes(array('form_id' => $new_id, 'user_id' => $uf['user_id']))->insert();
+					}
+				} else {
+					pjUserFormModel::factory()->setAttributes(array('form_id' => $new_id, 'user_id' => '1'))->insert();
+				}
+
+				$err = 'AF03';
+			} else {
+				$err = 'AF04';
+			}
+
+			pjUtil::redirect(PJ_INSTALL_URL . "index.php?controller=pjAdminForms&action=pjActionIndex&err=$err");
+		} else {
+			$this->set('status', 2);
+		}
+	}
+
 	public function pjActionDeleteForm()
 	{
 		$this->setAjax(true);

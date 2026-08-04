@@ -168,6 +168,7 @@ var jQuery_1_8_2 = jQuery_1_8_2 || $.noConflict();
 			var gridOpts = {
 					buttons: [{type: "edit", url: "index.php?controller=pjAdminForms&action=pjActionUpdate&id={:id}"},
 					          {type: "view", url: "preview.php?id={:id}", target: "_blank"},
+					          {type: "copy", url: "index.php?controller=pjAdminForms&action=pjActionClone&id={:id}"},
 					          {type: "delete", url: "index.php?controller=pjAdminForms&action=pjActionDeleteForm&id={:id}"}
 					          ],
 					columns: [{text: myLabel.form_name, type: "text", sortable: true, editable: true, width: 230, editableWidth: 220},
