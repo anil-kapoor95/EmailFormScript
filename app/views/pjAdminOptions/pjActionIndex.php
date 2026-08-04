@@ -40,6 +40,8 @@ if (isset($tpl['status']))
 				for ($i = 0; $i < $count; $i++)
 				{
 					if ($tpl['arr'][$i]['tab_id'] != 1 || (int) $tpl['arr'][$i]['is_visible'] === 0) continue;
+					// Email/SMTP options are managed on the dedicated "Email Settings" tab.
+					if (in_array($tpl['arr'][$i]['key'], array('o_send_email', 'o_smtp_host', 'o_smtp_port', 'o_smtp_user', 'o_smtp_pass', 'o_smtp_secure', 'o_smtp_auth', 'o_from_email', 'o_from_name'))) continue;
 					$rowClass = NULL;
 					$rowStyle = NULL;
 					if (in_array($tpl['arr'][$i]['key'], array('o_smtp_host', 'o_smtp_port', 'o_smtp_user', 'o_smtp_pass')))

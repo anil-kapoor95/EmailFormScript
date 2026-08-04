@@ -342,8 +342,10 @@ class pjFront extends pjAppController
 						->setTransport('smtp')
 						->setSmtpHost($this->option_arr['o_smtp_host'])
 						->setSmtpPort($this->option_arr['o_smtp_port'])
+						->setSmtpSecure(isset($this->option_arr['o_smtp_secure']) && in_array($this->option_arr['o_smtp_secure'], array('ssl', 'tls')) ? $this->option_arr['o_smtp_secure'] : '')
 						->setSmtpUser($this->option_arr['o_smtp_user'])
 						->setSmtpPass($this->option_arr['o_smtp_pass'])
+						->setSmtpAuthType(isset($this->option_arr['o_smtp_auth']) && in_array($this->option_arr['o_smtp_auth'], array('CRAM-MD5', 'LOGIN', 'PLAIN', 'XOAUTH2')) ? $this->option_arr['o_smtp_auth'] : 'LOGIN')
 						->setSender($this->option_arr['o_smtp_user']);
 				}
 				
@@ -397,8 +399,10 @@ class pjFront extends pjAppController
 							->setTransport('smtp')
 							->setSmtpHost($this->option_arr['o_smtp_host'])
 							->setSmtpPort($this->option_arr['o_smtp_port'])
+							->setSmtpSecure(isset($this->option_arr['o_smtp_secure']) && in_array($this->option_arr['o_smtp_secure'], array('ssl', 'tls')) ? $this->option_arr['o_smtp_secure'] : '')
 							->setSmtpUser($this->option_arr['o_smtp_user'])
 							->setSmtpPass($this->option_arr['o_smtp_pass'])
+							->setSmtpAuthType(isset($this->option_arr['o_smtp_auth']) && in_array($this->option_arr['o_smtp_auth'], array('CRAM-MD5', 'LOGIN', 'PLAIN', 'XOAUTH2')) ? $this->option_arr['o_smtp_auth'] : 'LOGIN')
 							->setSender($this->option_arr['o_smtp_user']);
 					}
 					
