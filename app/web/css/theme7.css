@@ -1,0 +1,20 @@
+/* ==========================================================================
+	#pjCfFormHead
+========================================================================== */
+#pjWrapper .pjCfForm .pjCfFormHead { background: #fff; text-align: center; }
+#pjWrapper .pjCfFormTitle { color: #519f87; font-weight: bold; text-transform: uppercase; }
+
+/* ==========================================================================
+	#pjCfFormBody
+========================================================================== */
+#pjWrapper .pjCfForm .pjCfFormBody { background: #fff; }
+#pjWrapper .pjCfForm label,
+#pjWrapper .pjCfForm .control-label,
+#pjWrapper .pjCfForm input[type="file"] { color: #4d4f4e; }
+#pjWrapper .pjCfForm a,
+#pjWrapper .pjCfForm .bootstrap-timepicker .input-group-addon { color: #1ec290; }
+#pjWrapper .pjCfForm a:hover,
+#pjWrapper .pjCfForm .bootstrap-timepicker .input-group-addon:hover { color: #1db084; }
+
+#pjWrapper .pjCfForm .pjCfFormButton { border-color: #1db084; border-width: 2px; background: #1ec290; color: #fff; }
+#pjWrapper .pjCfForm .pjCfFormButton:hover { border-color: #1db084; border-width: 2px; background: #1db084; color: #fff; }

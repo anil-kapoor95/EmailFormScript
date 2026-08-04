@@ -1,0 +1,30 @@
+/* ==========================================================================
+	#General
+========================================================================== */
+#pjWrapper .pjCfForm { border-color: #2b1b02; background: #2b1b02; }
+
+/* ==========================================================================
+	#pjCfFormHead
+========================================================================== */
+#pjWrapper .pjCfForm .pjCfFormHead { border-color: #1a1004; background: #1a1004; text-align: center; }
+#pjWrapper .pjCfFormTitle { color: #ffd35c; font-weight: bold; text-transform: uppercase; }
+
+/* ==========================================================================
+	#pjCfFormBody
+========================================================================== */
+#pjWrapper .pjCfForm .pjCfFormBody { background: #3c270a; }
+#pjWrapper .pjCfForm label,
+#pjWrapper .pjCfForm .control-label,
+#pjWrapper .pjCfForm input[type="file"] { color: #8b918d; }
+#pjWrapper .pjCfForm .form-control { border-color: #2b1b02; background: #2b1b02; color: #fff; }
+#pjWrapper .pjCfForm .form-control:focus { -webkit-box-shadow: 0 0 10px rgba(255, 255, 255, .3); box-shadow: 0 0 10px rgba(255, 255, 255, .3); }
+#pjWrapper .pjCfForm a,
+#pjWrapper .pjCfForm .bootstrap-timepicker .input-group-addon { color: #ffd35c; }
+#pjWrapper .pjCfForm .bootstrap-timepicker .input-group-addon,
+#pjWrapper .pjCfForm .calendar-trigger,
+#pjWrapper .pjCfForm .bootstrap-timepicker-widget a:hover { border-color: #251d10; background: #251d10; }
+#pjWrapper .pjCfForm a:hover,
+#pjWrapper .pjCfForm .bootstrap-timepicker .input-group-addon:hover { color: #fff; }
+
+#pjWrapper .pjCfForm .pjCfFormButton { border-color: #e25925; border-width: 2px; background: #f65a1f; color: #fff; font-weight: bold; text-transform: uppercase; }
+#pjWrapper .pjCfForm .pjCfFormButton:hover { border-color: #e25925; background: #e25925; color: #fff; }

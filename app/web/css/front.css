@@ -1,0 +1,53 @@
+@CHARSET "UTF-8";
+
+body [id^="pjWrapper"]{
+	background-color: transparent !important;
+}
+
+#pjWrapper .pjCF-form label.cf-heading-large{
+	font-size: 32px;
+}
+#pjWrapper .pjCF-form label.cf-heading-medium{
+	font-size: 24px;
+}
+#pjWrapper .pjCF-form label.cf-heading-small{
+	font-size: 18px;
+}
+#pjWrapper .pjCF-form label.pjCfLeftAlign{
+	text-align: left !important;
+}
+#pjWrapper input[type="checkbox"], 
+#pjWrapper input[type="radio"] {
+    margin-top: 2px !important;
+}
+/* ==========================================================================
+	#pjCfTime
+========================================================================== */
+#pjWrapper .pjCfTime .input-group-addon { cursor: pointer; }
+#pjWrapper .pjCfTime .form-control { border-radius: 4px 0 0 4px; }
+
+/* ==========================================================================
+	#pjCfCheckbox
+========================================================================== */
+#pjWrapper .pjCfCheckbox .form-control { width: auto; margin-top: 0; cursor: pointer; }
+
+/* ==========================================================================
+	#pjCfRadio
+========================================================================== */
+#pjWrapper .pjCfRadio { display: inline-block; padding-right: 5px; }
+
+/* ==========================================================================
+	#pjCfUpload
+========================================================================== */
+#pjWrapper .pjCfUploadField { padding-top: 6px; }
+#pjWrapper .pjCfUploadField input { cursor: pointer; }
+/* ==========================================================================
+	#Responsive
+========================================================================== */
+@media only screen and ( max-width: 768px ) {
+	#pjWrapper .pjCfCalendarFirst { padding-bottom: 15px; }
+	
+	#pjWrapper .pjCfCheckbox .col-sm-3,
+	#pjWrapper .pjCfCheckbox .col-sm-6 { float: left; width: auto; }
+	#pjWrapper .pjCfCheckbox .control-label { padding-top: 6px; }
+}

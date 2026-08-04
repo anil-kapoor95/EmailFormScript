@@ -1,0 +1,33 @@
+@CHARSET "UTF-8";
+[pjCF_container] .help-block.with-errors,
+[pjCF_container] .help-block.with-errors .list-unstyled { margin: 0; }
+[pjCF_container] .has-error .help-block.with-errors { padding-top: 5px; }
+[pjCF_container]{
+	font-family: [font_family];
+	font-size: [font_size]px;
+	color: #[font_color];
+	background-color: [background_color] !important;
+}
+[pjCF_container] .pjCF-form-field{
+	font-family: [font_family] !important;
+	font-size: [font_size]px !important;
+	color: #[font_color] !important;
+	background-color: [field_background_color] !important;
+}
+
+[pjCF_container] .pjCF-button{
+	font-family: [font_family];
+	font-size: [font_size]px;
+	color: #[font_color];
+	background-color: [button_background_color] !important;
+	border-color: #[button_border_color] !important;
+}
+[pjCF_container] .pjCF-button:hover{
+	background-color: [button_hover_background_color] !important;
+	border-color: #[button_hover_border_color] !important;
+}
+
+.pjCF-ui-jquery{
+	font-family: [font_family] !important;
+	font-size: [font_size]px !important;
+}

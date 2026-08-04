@@ -1,0 +1,38 @@
+/* ==========================================================================
+	#pjCfFormHead
+========================================================================== */
+#pjWrapper .pjCfForm .pjCfFormHead { background: #3d3938; text-align: center; }
+#pjWrapper .pjCfFormTitle { color: #ea3d1b; font-weight: bold; text-transform: uppercase; }
+
+/* ==========================================================================
+	#pjCfFormBody
+========================================================================== */
+#pjWrapper .pjCfForm .pjCfFormBody { background: #f3f1f2; }
+#pjWrapper .pjCfForm label,
+#pjWrapper .pjCfForm .control-label,
+#pjWrapper .pjCfForm input[type="file"] { color: #4c4e4d; }
+#pjWrapper .pjCfForm a,
+#pjWrapper .pjCfForm .bootstrap-timepicker .input-group-addon { color: #ea3d1b; }
+#pjWrapper .pjCfForm a:hover,
+#pjWrapper .pjCfForm .bootstrap-timepicker .input-group-addon:hover { color: #cc2c0d; }
+
+#pjWrapper .pjCfFormButton { border-color: #d0391c; color: #fff; 
+	background: rgb(243,76,42);
+	background: -moz-linear-gradient(top,  rgba(243,76,42,1) 0%, rgba(243,74,41,1) 20%, rgba(240,71,38,1) 27%, rgba(241,72,39,1) 33%, rgba(234,64,29,1) 80%, rgba(232,62,29,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(243,76,42,1)), color-stop(20%,rgba(243,74,41,1)), color-stop(27%,rgba(240,71,38,1)), color-stop(33%,rgba(241,72,39,1)), color-stop(80%,rgba(234,64,29,1)), color-stop(100%,rgba(232,62,29,1)));
+	background: -webkit-linear-gradient(top,  rgba(243,76,42,1) 0%,rgba(243,74,41,1) 20%,rgba(240,71,38,1) 27%,rgba(241,72,39,1) 33%,rgba(234,64,29,1) 80%,rgba(232,62,29,1) 100%);
+	background: -o-linear-gradient(top,  rgba(243,76,42,1) 0%,rgba(243,74,41,1) 20%,rgba(240,71,38,1) 27%,rgba(241,72,39,1) 33%,rgba(234,64,29,1) 80%,rgba(232,62,29,1) 100%);
+	background: -ms-linear-gradient(top,  rgba(243,76,42,1) 0%,rgba(243,74,41,1) 20%,rgba(240,71,38,1) 27%,rgba(241,72,39,1) 33%,rgba(234,64,29,1) 80%,rgba(232,62,29,1) 100%);
+	background: linear-gradient(to bottom,  rgba(243,76,42,1) 0%,rgba(243,74,41,1) 20%,rgba(240,71,38,1) 27%,rgba(241,72,39,1) 33%,rgba(234,64,29,1) 80%,rgba(232,62,29,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f34c2a', endColorstr='#e83e1d',GradientType=0 );
+}
+#pjWrapper .pjCfFormButton:hover { border-color: #d0391c; color: #fff; 
+	background: rgb(232,62,29);
+	background: -moz-linear-gradient(top,  rgba(232,62,29,1) 0%, rgba(234,64,29,1) 20%, rgba(241,72,39,1) 67%, rgba(240,71,38,1) 73%, rgba(243,74,41,1) 80%, rgba(243,76,42,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(232,62,29,1)), color-stop(20%,rgba(234,64,29,1)), color-stop(67%,rgba(241,72,39,1)), color-stop(73%,rgba(240,71,38,1)), color-stop(80%,rgba(243,74,41,1)), color-stop(100%,rgba(243,76,42,1)));
+	background: -webkit-linear-gradient(top,  rgba(232,62,29,1) 0%,rgba(234,64,29,1) 20%,rgba(241,72,39,1) 67%,rgba(240,71,38,1) 73%,rgba(243,74,41,1) 80%,rgba(243,76,42,1) 100%);
+	background: -o-linear-gradient(top,  rgba(232,62,29,1) 0%,rgba(234,64,29,1) 20%,rgba(241,72,39,1) 67%,rgba(240,71,38,1) 73%,rgba(243,74,41,1) 80%,rgba(243,76,42,1) 100%);
+	background: -ms-linear-gradient(top,  rgba(232,62,29,1) 0%,rgba(234,64,29,1) 20%,rgba(241,72,39,1) 67%,rgba(240,71,38,1) 73%,rgba(243,74,41,1) 80%,rgba(243,76,42,1) 100%);
+	background: linear-gradient(to bottom,  rgba(232,62,29,1) 0%,rgba(234,64,29,1) 20%,rgba(241,72,39,1) 67%,rgba(240,71,38,1) 73%,rgba(243,74,41,1) 80%,rgba(243,76,42,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e83e1d', endColorstr='#f34c2a',GradientType=0 );
+}
