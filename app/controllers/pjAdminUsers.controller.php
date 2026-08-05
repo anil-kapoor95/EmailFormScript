@@ -166,7 +166,8 @@ class pjAdminUsers extends pjAdmin
 				
 			$column = 'name';
 			$direction = 'ASC';
-			if (isset($_GET['direction']) && isset($_GET['column']) && in_array(strtoupper($_GET['direction']), array('ASC', 'DESC')))
+			$allowed_columns = array('name', 'email', 'created', 'role', 'status');
+			if (isset($_GET['direction']) && isset($_GET['column']) && in_array(strtoupper($_GET['direction']), array('ASC', 'DESC')) && in_array($_GET['column'], $allowed_columns))
 			{
 				$column = $_GET['column'];
 				$direction = strtoupper($_GET['direction']);

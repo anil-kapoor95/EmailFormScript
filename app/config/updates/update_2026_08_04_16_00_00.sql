@@ -1,9 +1,10 @@
+START TRANSACTION;
+
 INSERT IGNORE INTO `options` (`foreign_id`, `key`, `tab_id`, `value`, `label`, `type`, `order`, `is_visible`, `style`) VALUES
 (1, 'o_captcha_provider', 1, 'phpjabbers|recaptcha::phpjabbers', 'PHPJabbers Image Captcha|Google reCAPTCHA', 'enum', 20, 1, NULL),
 (1, 'o_recaptcha_site_key', 1, NULL, NULL, 'string', 21, 1, NULL),
 (1, 'o_recaptcha_secret_key', 1, NULL, NULL, 'string', 22, 1, NULL);
 
--- 2) Translatable labels (field key registry + per-language content)
 INSERT IGNORE INTO `fields` (`key`, `type`, `label`, `source`) VALUES ('opt_o_captcha_provider', 'backend', 'Options / Captcha type', 'script');
 SET @id := (SELECT `id` FROM `fields` WHERE `key` = 'opt_o_captcha_provider' LIMIT 1);
 INSERT IGNORE INTO `multi_lang` (`foreign_id`, `model`, `locale`, `field`, `content`, `source`) VALUES (@id, 'pjField', '::LOCALE::', 'title', 'Captcha type', 'script');
@@ -28,16 +29,12 @@ INSERT IGNORE INTO `fields` (`key`,`type`,`label`,`source`) VALUES ('error_bodie
 SET @id := (SELECT `id` FROM `fields` WHERE `key`='error_bodies_ARRAY_AO02' LIMIT 1);
 INSERT IGNORE INTO `multi_lang` (`foreign_id`,`model`,`locale`,`field`,`content`,`source`) VALUES (@id,'pjField','::LOCALE::','title','Please enter both the reCAPTCHA site key and secret key when Google reCAPTCHA is selected.','script');
 
--- Client-side validation message (Options page).
 INSERT IGNORE INTO `fields` (`key`,`type`,`label`,`source`) VALUES ('errRecaptchaKeys','backend','Message / reCAPTCHA keys required','script');
 SET @id := (SELECT `id` FROM `fields` WHERE `key`='errRecaptchaKeys' LIMIT 1);
 INSERT IGNORE INTO `multi_lang` (`foreign_id`,`model`,`locale`,`field`,`content`,`source`) VALUES (@id,'pjField','::LOCALE::','title','Please enter both the reCAPTCHA site key and secret key when Google reCAPTCHA is selected.','script');
 
--- Caption for the reCAPTCHA mock shown in the form builder preview.
 INSERT IGNORE INTO `fields` (`key`,`type`,`label`,`source`) VALUES ('lblRecaptchaMock','backend','Label / reCAPTCHA preview caption','script');
 SET @id := (SELECT `id` FROM `fields` WHERE `key`='lblRecaptchaMock' LIMIT 1);
 INSERT IGNORE INTO `multi_lang` (`foreign_id`,`model`,`locale`,`field`,`content`,`source`) VALUES (@id,'pjField','::LOCALE::','title','I''m not a robot','script');
 
--- Refresh the cached label index so the new labels load.
--- o_fields_index is a random token (not a counter); set a fresh value to bust the cache.
-UPDATE `options` SET `value` = MD5(RAND()) WHERE `key` = 'o_fields_index';
+COMMIT;

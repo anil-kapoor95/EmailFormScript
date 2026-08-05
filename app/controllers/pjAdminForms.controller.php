@@ -41,7 +41,8 @@ class pjAdminForms extends pjAdmin
 				
 			$column = 'created';
 			$direction = 'DESC';
-			if (isset($_GET['direction']) && isset($_GET['column']) && in_array(strtoupper($_GET['direction']), array('ASC', 'DESC')))
+			$allowed_columns = array('form_title', 'date_time', 'cnt_submissions', 'status', 'created');
+			if (isset($_GET['direction']) && isset($_GET['column']) && in_array(strtoupper($_GET['direction']), array('ASC', 'DESC')) && in_array($_GET['column'], $allowed_columns))
 			{
 				$column = $_GET['column'];
 				$direction = strtoupper($_GET['direction']);
@@ -119,24 +120,18 @@ class pjAdminForms extends pjAdmin
 		if ($this->isAdmin())
 		{
 			$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-
 			$arr = pjFormModel::factory()->find($id)->getData();
 			if (count($arr) === 0)
 			{
 				pjUtil::redirect(PJ_INSTALL_URL . "index.php?controller=pjAdminForms&action=pjActionIndex&err=AF08");
 				return;
 			}
-
-			// 1) Duplicate the form record (fresh id / created date, appended title)
 			$data = $arr;
 			unset($data['id'], $data['created'], $data['modified']);
 			$data['form_title'] = $arr['form_title'] . ' (copy)';
-
 			$new_id = pjFormModel::factory()->setAttributes($data)->insert()->getInsertId();
-
 			if ($new_id !== false && (int) $new_id > 0)
 			{
-				// 2) Duplicate the form fields
 				$pjFormFieldModel = pjFormFieldModel::factory();
 				$field_arr = $pjFormFieldModel->where('form_id', $id)->orderBy("order_id ASC")->findAll()->getData();
 				foreach ($field_arr as $field)
@@ -145,8 +140,6 @@ class pjAdminForms extends pjAdmin
 					$field['form_id'] = $new_id;
 					$pjFormFieldModel->reset()->setAttributes($field)->insert();
 				}
-
-				// 3) Duplicate the recipient (user) assignments
 				$user_form_arr = pjUserFormModel::factory()->where('form_id', $id)->findAll()->getData();
 				if (!empty($user_form_arr))
 				{
@@ -154,15 +147,15 @@ class pjAdminForms extends pjAdmin
 					{
 						pjUserFormModel::factory()->reset()->setAttributes(array('form_id' => $new_id, 'user_id' => $uf['user_id']))->insert();
 					}
-				} else {
+				}
+				else
+				{
 					pjUserFormModel::factory()->setAttributes(array('form_id' => $new_id, 'user_id' => '1'))->insert();
 				}
-
 				$err = 'AF03';
 			} else {
 				$err = 'AF04';
 			}
-
 			pjUtil::redirect(PJ_INSTALL_URL . "index.php?controller=pjAdminForms&action=pjActionIndex&err=$err");
 		} else {
 			$this->set('status', 2);

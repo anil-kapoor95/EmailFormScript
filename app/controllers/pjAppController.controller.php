@@ -121,6 +121,7 @@ class pjAppController extends pjController
 		
     	if ($_GET['controller'] != 'pjInstaller')
 		{
+			$this->pjCheckCsrf();
 			$this->models['Option'] = pjOptionModel::factory();
 			$this->option_arr = $this->models['Option']->getPairs($this->getForeignId());
 			$this->set('option_arr', $this->option_arr);
@@ -141,10 +142,116 @@ class pjAppController extends pjController
 			}
 		}
     }
-	public function isEditor()
+    /**
+     * Returns the per-session CSRF token, generating one if needed, and
+     * exposes it to the browser via a JS-readable cookie (admin panel).
+     */
+    public function pjGetCsrfToken()
+    {
+    	if (empty($_SESSION['pj_csrf_token']))
+    	{
+    		if (function_exists('random_bytes'))
+    		{
+    			$_SESSION['pj_csrf_token'] = bin2hex(random_bytes(32));
+    		}
+    		else
+    		{
+    			$_SESSION['pj_csrf_token'] = md5(uniqid(mt_rand(), true)) . md5(uniqid(mt_rand(), true));
+    		}
+    	}
+    	if (!headers_sent())
+    	{
+    		setcookie('pj_csrf_token', $_SESSION['pj_csrf_token'], 0, '/');
+    	}
+    	return $_SESSION['pj_csrf_token'];
+    }
+
+    /**
+     * Constant-time comparison of a submitted token against the session token.
+     */
+    public function pjValidateCsrf($token)
+    {
+    	if (empty($token) || empty($_SESSION['pj_csrf_token']))
+    	{
+    		return false;
+    	}
+    	if (function_exists('hash_equals'))
+    	{
+    		return hash_equals($_SESSION['pj_csrf_token'], (string) $token);
+    	}
+    	return $_SESSION['pj_csrf_token'] === (string) $token;
+    }
+
+    /**
+     * CSRF guard for the admin panel. Validates a token on every state-changing
+     * admin request (all POSTs plus state-changing GET actions). Authentication
+     * endpoints are exempt to avoid lock-out. The public form (pjFront) and the
+     * installer are not handled here. The token is read from a request header
+     * (AJAX) or a hidden POST field (forms) - never from the URL.
+     */
+    public function pjCheckCsrf()
+    {
+    	$controller = isset($_GET['controller']) ? $_GET['controller'] : '';
+    	if ($controller === 'pjFront' || $controller === 'pjInstaller')
+    	{
+    		return;
+    	}
+
+    	// Make sure a token exists and is available to the browser.
+    	$this->pjGetCsrfToken();
+
+    	$action = isset($_GET['action']) ? $_GET['action'] : '';
+    	$method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
+
+    	// Login / forgot / logout require no token (avoids admin lock-out).
+    	if (in_array($action, array('pjActionLogin', 'pjActionForgot', 'pjActionLogout')))
+    	{
+    		return;
+    	}
+
+    	$needsCheck = false;
+    	if ($method === 'POST')
+    	{
+    		$needsCheck = true;
+    	}
+    	elseif (preg_match('/^pjAction(Delete|Clone|Status|SetActive|Sort|Duplicate|Remove)/i', $action))
+    	{
+    		$needsCheck = true;
+    	}
+
+    	if (!$needsCheck)
+    	{
+    		return;
+    	}
+
+    	// Read the token from the POST body (csrf_token field) or, for AJAX, from
+    	// the X-CSRF-Token header. Never from the URL / query string.
+    	$submitted = '';
+    	if (isset($_POST['csrf_token']))
+    	{
+    		$submitted = $_POST['csrf_token'];
+    	}
+    	elseif (isset($_SERVER['HTTP_X_CSRF_TOKEN']))
+    	{
+    		$submitted = $_SERVER['HTTP_X_CSRF_TOKEN'];
+    	}
+
+    	if (!$this->pjValidateCsrf($submitted))
+    	{
+    		if ($this->isXHR())
+    		{
+    			header('HTTP/1.1 403 Forbidden');
+    			echo '403';
+    			exit;
+    		}
+    		pjUtil::redirect($_SERVER['PHP_SELF'] . "?controller=pjAdminForms&action=pjActionIndex&err=AG01");
+    	}
+    }
+
+    public function isEditor()
     {
     	return $this->getRoleId() == 2;
-    }	
+    }
     public function getForeignId()
     {
     	return 1;

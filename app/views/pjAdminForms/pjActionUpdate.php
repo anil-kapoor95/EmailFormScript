@@ -135,6 +135,9 @@ if (isset($tpl['status']))
 						<input type="text" name="thankyou_page" id="thankyou_page" class="pj-form-field w400" value="<?php echo !empty($tpl['arr']['thankyou_page']) ? htmlspecialchars(stripslashes($tpl['arr']['thankyou_page'])) : 'http://'; ?>" placeholder="http://www.domain.com"  />
 					</span>
 				</p>
+				<?php if (isset($tpl['option_arr']['o_captcha_provider']) && $tpl['option_arr']['o_captcha_provider'] == 'recaptcha') { ?>
+				<input type="hidden" name="captcha_type" value="<?php echo htmlspecialchars($tpl['arr']['captcha_type']); ?>" />
+				<?php } else { ?>
 				<p>
 					<label class="title"><?php __('lblCaptchaType', false, true); ?></label>
 					<span class="inline_block">
@@ -148,6 +151,7 @@ if (isset($tpl['status']))
 						</select>
 					</span>
 				</p>
+				<?php } ?>
 				<p>
 					<label class="title"><?php __('lblRejectLinks', false, true); ?></label>
 					<span class="inline_block">

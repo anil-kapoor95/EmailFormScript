@@ -1,11 +1,7 @@
--- Email Settings update - runs via the script's Update mechanism (pjInstaller).
--- Table names are UNPREFIXED on purpose: the installer prepends the table
--- prefix, and replaces ::LOCALE:: with each installed language id.
+START TRANSACTION;
 
--- 1) New options
 INSERT IGNORE INTO `options` (`foreign_id`, `key`, `tab_id`, `value`, `label`, `type`, `order`, `is_visible`, `style`) VALUES (1, 'o_smtp_secure', 1, '|ssl|tls::', 'None|SSL|TLS', 'enum', 9, 0, NULL), (1, 'o_smtp_auth', 1, 'LOGIN|PLAIN|CRAM-MD5|XOAUTH2::LOGIN', 'LOGIN|PLAIN|CRAM-MD5|XOAUTH2', 'enum', 9, 0, NULL), (1, 'o_from_name', 1, NULL, NULL, 'string', 11, 0, NULL);
 
--- 2) Translatable labels/messages (field + per-language content)
 INSERT IGNORE INTO `fields` (`key`, `type`, `label`, `source`) VALUES ('menuEmailSettings', 'backend', 'Menu / Email Settings', 'script');
 SET @id := (SELECT `id` FROM `fields` WHERE `key` = 'menuEmailSettings' LIMIT 1);
 INSERT IGNORE INTO `multi_lang` (`foreign_id`, `model`, `locale`, `field`, `content`, `source`) VALUES (@id, 'pjField', '::LOCALE::', 'title', 'Email Settings', 'script');
@@ -110,3 +106,4 @@ INSERT IGNORE INTO `fields` (`key`, `type`, `label`, `source`) VALUES ('btnSendE
 SET @id := (SELECT `id` FROM `fields` WHERE `key` = 'btnSendEmail' LIMIT 1);
 INSERT IGNORE INTO `multi_lang` (`foreign_id`, `model`, `locale`, `field`, `content`, `source`) VALUES (@id, 'pjField', '::LOCALE::', 'title', 'Send Email', 'script');
 
+COMMIT;

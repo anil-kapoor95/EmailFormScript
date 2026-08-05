@@ -106,7 +106,8 @@ class pjAdminSubmissions extends pjAdmin
 			
 			$column = 'submitted_date';
 			$direction = 'DESC';
-			if (isset($_GET['direction']) && isset($_GET['column']) && in_array(strtoupper($_GET['direction']), array('ASC', 'DESC')))
+			$allowed_columns = array('form_title', 'ip', 'submitted_date');
+			if (isset($_GET['direction']) && isset($_GET['column']) && in_array(strtoupper($_GET['direction']), array('ASC', 'DESC')) && in_array($_GET['column'], $allowed_columns))
 			{
 				$column = $_GET['column'];
 				$direction = strtoupper($_GET['direction']);
