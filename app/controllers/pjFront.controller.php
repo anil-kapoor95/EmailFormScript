@@ -216,15 +216,25 @@ class pjFront extends pjAppController
 			}
 			if($has_captcha == true)
 			{
-				if (!isset($_POST['captcha']))
+				if (isset($this->option_arr['o_captcha_provider']) && $this->option_arr['o_captcha_provider'] == 'recaptcha')
 				{
-					echo '201';
-					exit;
-				}else{
-					if(!pjCaptcha::validate($_POST['captcha'], $_SESSION[$this->defaultCaptcha . $_POST['id']]))
+					$recaptcha_response = isset($_POST['g-recaptcha-response']) ? $_POST['g-recaptcha-response'] : '';
+					if (!$this->pjVerifyRecaptcha($recaptcha_response))
 					{
 						echo '201';
 						exit;
+					}
+				}else{
+					if (!isset($_POST['captcha']))
+					{
+						echo '201';
+						exit;
+					}else{
+						if(!pjCaptcha::validate($_POST['captcha'], $_SESSION[$this->defaultCaptcha . $_POST['id']]))
+						{
+							echo '201';
+							exit;
+						}
 					}
 				}
 			}
@@ -342,10 +352,8 @@ class pjFront extends pjAppController
 						->setTransport('smtp')
 						->setSmtpHost($this->option_arr['o_smtp_host'])
 						->setSmtpPort($this->option_arr['o_smtp_port'])
-						->setSmtpSecure(isset($this->option_arr['o_smtp_secure']) && in_array($this->option_arr['o_smtp_secure'], array('ssl', 'tls')) ? $this->option_arr['o_smtp_secure'] : '')
 						->setSmtpUser($this->option_arr['o_smtp_user'])
 						->setSmtpPass($this->option_arr['o_smtp_pass'])
-						->setSmtpAuthType(isset($this->option_arr['o_smtp_auth']) && in_array($this->option_arr['o_smtp_auth'], array('CRAM-MD5', 'LOGIN', 'PLAIN', 'XOAUTH2')) ? $this->option_arr['o_smtp_auth'] : 'LOGIN')
 						->setSender($this->option_arr['o_smtp_user']);
 				}
 				
@@ -399,10 +407,8 @@ class pjFront extends pjAppController
 							->setTransport('smtp')
 							->setSmtpHost($this->option_arr['o_smtp_host'])
 							->setSmtpPort($this->option_arr['o_smtp_port'])
-							->setSmtpSecure(isset($this->option_arr['o_smtp_secure']) && in_array($this->option_arr['o_smtp_secure'], array('ssl', 'tls')) ? $this->option_arr['o_smtp_secure'] : '')
 							->setSmtpUser($this->option_arr['o_smtp_user'])
 							->setSmtpPass($this->option_arr['o_smtp_pass'])
-							->setSmtpAuthType(isset($this->option_arr['o_smtp_auth']) && in_array($this->option_arr['o_smtp_auth'], array('CRAM-MD5', 'LOGIN', 'PLAIN', 'XOAUTH2')) ? $this->option_arr['o_smtp_auth'] : 'LOGIN')
 							->setSender($this->option_arr['o_smtp_user']);
 					}
 					
@@ -512,6 +518,54 @@ class pjFront extends pjAppController
 		return implode("|", $field_name_arr);
 	}
 	
+	private function pjVerifyRecaptcha($response)
+	{
+		$secret = isset($this->option_arr['o_recaptcha_secret_key']) ? trim($this->option_arr['o_recaptcha_secret_key']) : '';
+		if ($secret == '' || $response == '')
+		{
+			return false;
+		}
+		$data = array(
+			'secret'   => $secret,
+			'response' => $response,
+			'remoteip' => $_SERVER['REMOTE_ADDR']
+		);
+		$url = 'https://www.google.com/recaptcha/api/siteverify';
+		$result = false;
+		if (function_exists('curl_init'))
+		{
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+			$result = curl_exec($ch);
+			curl_close($ch);
+		}
+		// Fall back to the stream wrapper if cURL is unavailable or failed
+		// (e.g. a server whose cURL has no CA bundle configured).
+		if ($result === false || $result === '' || $result === null)
+		{
+			$context = stream_context_create(array(
+				'http' => array(
+					'method'  => 'POST',
+					'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+					'content' => http_build_query($data),
+					'timeout' => 20
+				)
+			));
+			$result = @file_get_contents($url, false, $context);
+		}
+		if ($result === false || $result === '')
+		{
+			return false;
+		}
+		$json = json_decode($result, true);
+		return (isset($json['success']) && $json['success'] == true);
+	}
+
 	private function pjCheckBannedWords($field_arr, $post, $banned_words)
 	{
 		$result = true;

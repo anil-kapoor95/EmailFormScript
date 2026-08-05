@@ -28,7 +28,8 @@
 			this.message_container = null;
 			this.$message_container = null;
 			this.$loader = null;
-			
+			this.recaptchaWidgetId = null;
+
 			return this;
 		},
 		init: function (opts) {
@@ -123,12 +124,44 @@
 			{
 				pjQ.$.get([self.opts.folder, "index.php?controller=pjFront&action=pjActionGetCaptcha", "&id=", self.opts.fid, "&session_id=", self.opts.session_id].join("")).done(function (data) {
 					$catchaWrapper.html(data);
-					var $form = $catchaWrapper.closest('form');
-					var $captcha_field = $form.find('input[name="captcha"]');
-					$captcha_field.rules('add', {
-						required: true,
-						remote: self.opts.folder + "index.php?controller=pjFront&action=pjActionCheckCaptcha&id=" + self.opts.fid + "&session_id=" + self.opts.session_id
-					});
+					var $recaptcha = $catchaWrapper.find('.g-recaptcha');
+					if ($recaptcha.length > 0)
+					{
+						var siteKey = $recaptcha.attr('data-sitekey');
+						var widgetElId = 'pjRecaptcha_' + self.opts.fid;
+						var renderRecaptcha = function () {
+							if (self.recaptchaWidgetId === null)
+							{
+								self.recaptchaWidgetId = window.grecaptcha.render(widgetElId, {sitekey: siteKey});
+							}
+						};
+						if (window.grecaptcha && window.grecaptcha.render)
+						{
+							renderRecaptcha();
+						}
+						else
+						{
+							window['pjRecaptchaOnload_' + self.opts.fid] = renderRecaptcha;
+							if (!document.getElementById('pjRecaptchaApi'))
+							{
+								var rc = document.createElement('script');
+								rc.id = 'pjRecaptchaApi';
+								rc.src = 'https://www.google.com/recaptcha/api.js?onload=pjRecaptchaOnload_' + self.opts.fid + '&render=explicit';
+								rc.async = true;
+								rc.defer = true;
+								document.getElementsByTagName('head')[0].appendChild(rc);
+							}
+						}
+					}
+					else
+					{
+						var $form = $catchaWrapper.closest('form');
+						var $captcha_field = $form.find('input[name="captcha"]');
+						$captcha_field.rules('add', {
+							required: true,
+							remote: self.opts.folder + "index.php?controller=pjFront&action=pjActionCheckCaptcha&id=" + self.opts.fid + "&session_id=" + self.opts.session_id
+						});
+					}
 				}).fail(function () {
 					console.log("Deferred is rejected");
 				});
@@ -219,6 +252,14 @@
 					submitHandler: function (form) {
 						pjQ.$('.pjCF-button').attr("disabled", "disabled");
 						self.$message_container.removeClass('alert-success').removeClass('alert-danger').html("").hide();
+						if(self.recaptchaWidgetId !== null && window.grecaptcha){
+							if(window.grecaptcha.getResponse(self.recaptchaWidgetId) == ''){
+								self.$message_container.addClass('alert-danger').show();
+								self.$message_container.html(self.opts.field_messages.captcha.remote);
+								pjQ.$('.pjCF-button').removeAttr("disabled");
+								return false;
+							}
+						}
 						if(self.checkLinks() == true && self.checkBlockWords() == true){
 							self.$form.ajaxSubmit({
 								success: function(data) {
@@ -244,6 +285,9 @@
 										}
 										self.$form.resetForm();
 										self.$form.find('.form-group').removeClass('has-success');
+										if(self.recaptchaWidgetId !== null && window.grecaptcha){
+											window.grecaptcha.reset(self.recaptchaWidgetId);
+										}
 									}else if(data=='200'){
 										self.$message_container.addClass('alert-danger').show();
 										self.$message_container.html(self.opts.error_message.word);
