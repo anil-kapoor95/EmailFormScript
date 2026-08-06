@@ -7,10 +7,10 @@ if (!defined("ROOT_PATH"))
 /**
  * PHP Framework
  *
- * @copyright Copyright 2018, PHPJabbers
+ * @copyright Copyright 2018, PHPJabbets, Ltd.
  * @link      https://www.phpjabbers.com/
  * @package   framework.components
- * @version   2.0.1
+ * @version   2.1.1
  */
 /**
  * Email class
@@ -667,7 +667,7 @@ class pjEmail
  */
 	public function setSubject($subject)
 	{
-		$this->subject = self::encode($subject);
+	    $this->subject = $subject;
 		return $this;
 	}
 /**

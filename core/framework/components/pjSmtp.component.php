@@ -340,7 +340,7 @@ class pjSmtp
             restore_error_handler();
         }
         // Verify we connected properly
-        if (!is_resource($this->smtp_conn)) {
+        if (!is_resource($this->smtp_conn) && !($this->smtp_conn instanceof GdImage)) {
             $this->setError(
                 'Failed to connect to server',
                 '',
@@ -584,7 +584,7 @@ class pjSmtp
      */
     public function connected()
     {
-        if (is_resource($this->smtp_conn)) {
+    	if (is_resource($this->smtp_conn) || $this->smtp_conn instanceof GdImage) {
             $sock_status = stream_get_meta_data($this->smtp_conn);
             if ($sock_status['eof']) {
                 // The socket is valid but we are not connected
@@ -614,7 +614,7 @@ class pjSmtp
         $this->setError('');
         $this->server_caps = null;
         $this->helo_rply = null;
-        if (is_resource($this->smtp_conn)) {
+        if (is_resource($this->smtp_conn) || $this->smtp_conn instanceof GdImage) {
             // close the connection and cleanup
             fclose($this->smtp_conn);
             $this->smtp_conn = null; //Makes for cleaner serialization
@@ -1098,7 +1098,7 @@ class pjSmtp
     protected function get_lines()
     {
         // If the connection is bad, give up straight away
-        if (!is_resource($this->smtp_conn)) {
+        if (!is_resource($this->smtp_conn) && !($this->smtp_conn instanceof GdImage)) {
             return '';
         }
         $data = '';
@@ -1109,7 +1109,7 @@ class pjSmtp
         }
         $selR = array($this->smtp_conn);
         $selW = null;
-        while (is_resource($this->smtp_conn) and !feof($this->smtp_conn)) {
+        while ((is_resource($this->smtp_conn) || $this->smtp_conn instanceof GdImage) and !feof($this->smtp_conn)) {
             //Must pass vars in here as params are by reference
             if (!stream_select($selR, $selW, $selW, $this->Timelimit)) {
                 $this->edebug(

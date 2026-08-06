@@ -46,19 +46,25 @@ var jQuery_1_8_2 = jQuery_1_8_2 || $.noConflict();
 			return i >= 0 ? v.substring(i + 2) : v;
 		}
 
-		// Collect the current values of the Email Settings form.
+		// Collect the current values of the Email Settings form. SMTP credentials
+		// are only included when SMTP is the selected transport, so the SMTP
+		// password is never sent when "PHP mail()" is chosen.
 		function collectEmailSettings() {
-			return {
-				send_email:  enumVal($('select[name="value-enum-o_send_email"]').val()),
-				smtp_host:   $.trim($('input[name="value-string-o_smtp_host"]').val() || ''),
-				smtp_port:   $.trim($('input[name="value-int-o_smtp_port"]').val() || ''),
-				smtp_secure: enumVal($('select[name="value-enum-o_smtp_secure"]').val()),
-				smtp_auth:   enumVal($('select[name="value-enum-o_smtp_auth"]').val()),
-				smtp_user:   $.trim($('input[name="value-string-o_smtp_user"]').val() || ''),
-				smtp_pass:   $('input[name="value-string-o_smtp_pass"]').val() || '',
-				from_email:  $.trim($('input[name="value-string-o_from_email"]').val() || ''),
-				from_name:   $.trim($('input[name="value-string-o_from_name"]').val() || '')
+			var send = enumVal($('select[name="value-enum-o_send_email"]').val());
+			var data = {
+				send_email: send,
+				from_email: $.trim($('input[name="value-string-o_from_email"]').val() || ''),
+				from_name:  $.trim($('input[name="value-string-o_from_name"]').val() || '')
 			};
+			if (send === 'smtp') {
+				data.smtp_host   = $.trim($('input[name="value-string-o_smtp_host"]').val() || '');
+				data.smtp_port   = $.trim($('input[name="value-int-o_smtp_port"]').val() || '');
+				data.smtp_secure = enumVal($('select[name="value-enum-o_smtp_secure"]').val());
+				data.smtp_auth   = enumVal($('select[name="value-enum-o_smtp_auth"]').val());
+				data.smtp_user   = $.trim($('input[name="value-string-o_smtp_user"]').val() || '');
+				data.smtp_pass   = $('input[name="value-string-o_smtp_pass"]').val() || '';
+			}
+			return data;
 		}
 
 		function paint($box, type, text) {
